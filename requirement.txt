@@ -1,1 +1,5 @@
-tavily-python
+streamlit
+openai
+requests
+python-dotenv
+git+https://github.com/tavily/Tavily-python.git
