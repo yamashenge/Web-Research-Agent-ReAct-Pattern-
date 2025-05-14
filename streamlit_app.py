@@ -6,7 +6,7 @@ from tavily import TavilyClient
 
 # Set your API keys (or use os.environ to pull from environment variables)
 openai.api_key = "your_api_key"  # or use os.environ
-tavily_client = TavilyClient(api_key="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")
+tavily_client = TavilyClient(api_key="")
 
 # ----- LLM Function -----
 def generate_questions(topic):
