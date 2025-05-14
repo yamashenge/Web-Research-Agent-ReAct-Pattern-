@@ -5,7 +5,7 @@ import os
 from tavily import TavilyClient
 
 # Set your API keys (or use os.environ to pull from environment variables)
-openai.api_key = "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"  # or use os.environ
+openai.api_key = "your_api_key"  # or use os.environ
 tavily_client = TavilyClient(api_key="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")
 
 # ----- LLM Function -----
