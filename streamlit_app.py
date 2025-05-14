@@ -1,17 +1,18 @@
-# streamlit_app.py
 import streamlit as st
 import openai
 import os
 from tavily import TavilyClient
 
-# Set your API keys (or use os.environ to pull from environment variables)
-openai.api_key = "your_api_key"  # or use os.environ
-tavily_client = TavilyClient(api_key="")
+# Accessing the OpenAI API key from secrets
+openai.api_key = st.secrets["openai"]["api_key"]
+
+# Set up Tavily client (ensure you have a valid Tavily API key)
+tavily_client = TavilyClient(api_key=st.secrets["tavily"]["api_key"])
 
 # ----- LLM Function -----
 def generate_questions(topic):
     prompt = f"""
-    Generate 5-6 in-depth research questions about the topic: "{topic}".
+    Generate 5-6 in-depth research questions about the topic: "{topic}". 
     Cover causes, effects, data, solutions, and controversies.
     """
     try:
@@ -53,16 +54,20 @@ def generate_report(topic, qna):
 # ----- Streamlit App -----
 st.title("🧠 Web Research Agent (ReAct Pattern)")
 
+# Input field for topic
 topic = st.text_input("Enter a research topic:")
 
+# Button to trigger generation
 if st.button("Generate"):
     if not topic:
         st.warning("Please enter a topic.")
     else:
         with st.spinner("Thinking..."):
+            # Generate questions based on the topic
             questions = generate_questions(topic)
             st.success("Questions generated!")
 
+        # Initialize a dictionary to hold questions and their respective answers
         qna = {}
         with st.spinner("Searching the web for answers..."):
             for q in questions:
@@ -71,15 +76,16 @@ if st.button("Generate"):
                 qna[q] = results
 
         with st.spinner("Compiling report..."):
+            # Generate the final report from the collected data
             report_md = generate_report(topic, qna)
 
         # Display the report
         st.markdown("---")
         st.markdown(report_md)
 
-        # Download button
+        # Provide a download button for the report
         st.download_button(
-            label="📥 Download Report as PDF",
+            label="📥 Download Report as Markdown",
             data=report_md,
             file_name=f"{topic.replace(' ', '_')}_report.md",
             mime="text/markdown"
